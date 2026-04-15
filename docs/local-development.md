@@ -1,5 +1,7 @@
 # 로컬 개발
 
+서비스 구조와 검색 처리 흐름은 [아키텍처](architecture.md), [상품 색인 파이프라인](indexing-pipeline.md), [이미지 검색 흐름](image-search-flow.md)을 참고합니다.
+
 ## 개발 환경
 
 | 기술스택분류 | 기술스택명 |

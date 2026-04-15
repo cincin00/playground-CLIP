@@ -2,6 +2,8 @@
 
 기본 prefix는 `/api/v1`입니다.
 
+이미지 검색의 전체 설계 흐름은 [이미지 검색 흐름](image-search-flow.md)을 참고합니다.
+
 ## Health
 
 ```http

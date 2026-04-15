@@ -39,6 +39,9 @@ scripts/test.sh
 
 ## 문서
 
+- [개념](docs/concepts.md)
 - [아키텍처](docs/architecture.md)
+- [상품 색인](docs/indexing-pipeline.md)
+- [이미지 검색 흐름](docs/image-search-flow.md)
 - [API](docs/api.md)
 - [로컬 개발](docs/local-development.md)

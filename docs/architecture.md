@@ -2,16 +2,67 @@
 
 ## 서비스 목표
 
-이미지 또는 이미지 URL을 입력받아 보유 상품 이미지와 비교하고, 동일하거나 유사한 상품을 추천하는 검색 API를 제공합니다.
+- 사용자가 업로드한 이미지 또는 이미지 URL을 기준으로 유사 상품을 검색합니다.
+- 상품 이미지, 상품 텍스트, 메타데이터를 함께 활용해 검색 정확도를 높입니다.
+- OpenCLIP 기반 임베딩을 사용해 이미지와 텍스트를 같은 벡터 검색 흐름에서 처리합니다.
 
-## 처리 흐름
+## 서비스 정의
 
-1. 클라이언트가 이미지 URL과 검색 조건을 API에 전달합니다.
-2. 이미지 검색 도메인이 CLIP adapter를 통해 이미지 임베딩을 생성합니다.
-3. OpenSearch repository가 상품 벡터 인덱스에서 유사 상품을 조회합니다.
-4. 도메인 서비스가 결과를 API 응답 모델로 정리합니다.
+상품 이미지를 입력받아 쇼핑몰이 보유한 상품 이미지 및 상품 정보를 기반으로 동일하거나 유사한 상품을 찾아주는 검색 서비스입니다.
 
-## 계층 구조
+## 핵심 처리 방향
+
+- 사용자 입력은 이미지 또는 이미지 URL입니다.
+- 현재 구현된 API는 이미지 URL 입력을 기본으로 합니다.
+- 검색은 이미지 임베딩을 기준으로 시작합니다.
+- 이후 상품 텍스트와 메타데이터를 함께 반영해 결과를 재정렬하는 방향으로 확장합니다.
+- 최종적으로 쇼핑몰 UI에 유사 상품 목록을 반환합니다.
+
+## 전체 서비스 구성도
+
+```mermaid
+flowchart LR
+    U[사용자] --> UI[퍼스트몰 이미지 검색 UI]
+
+    UI -->|이미지 업로드 / URL 입력 / 필터 선택| ABE[퍼스트몰 백엔드]
+    ABE -->|이미지 또는 URL + 필터 정보 전달| BAPI[이미지 검색 서비스 API]
+
+    BAPI --> IMG[이미지 확보]
+    IMG --> PRE[이미지 전처리]
+    PRE --> QEMB[OpenCLIP 입력 이미지 임베딩 생성]
+
+    QEMB --> VSEARCH[벡터 검색 엔진]
+    VSEARCH --> RERANK[메타데이터 필터링 및 재정렬]
+    RERANK --> RES[유사 상품 결과 생성]
+
+    RES --> ABE
+    ABE --> UI
+    UI --> U
+
+    IDX[상품 색인 파이프라인] --> VSEARCH
+```
+
+## 컨테이너 구성도
+
+```mermaid
+flowchart LR
+    UA[사용자 브라우저] --> WA[퍼스트몰 웹 서버]
+    WA --> AA[퍼스트몰 API 서버]
+    AA --> BS[이미지 검색 서비스]
+
+    BS --> REDIS[(Redis Cache)]
+    BS --> VDB[(OpenSearch / Vector DB)]
+    BS --> OBJ[(Object Storage)]
+    BS --> MODEL[OpenCLIP Inference Runtime]
+
+    IDXJOB[상품 색인 배치 작업] --> MODEL
+    IDXJOB --> VDB
+    IDXJOB --> OBJ
+
+    ADM[운영자 / 배치 스케줄러] --> IDXJOB
+```
+
+## 현재 코드 계층
 
 - `app/api`: FastAPI router와 endpoint
 - `app/domain`: 상품, 카테고리, 이미지 검색 도메인 로직
