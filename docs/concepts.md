@@ -57,30 +57,57 @@
 CLIP(Contrastive Language-Image Pretraining)은 이미지와 문장을 같은 좌표계에 놓고 학습한 신경망 모델입니다.
 
 - 이미지와 텍스트를 같은 임베딩 공간에 매핑합니다.
-- 이미지가 주어졌을 때 관련성이 높은 텍스트를 찾거나, 텍스트가 주어졌을 때 관련 이미지를 검색하는 데 활용할 수 있습니다.
+- 이미지가 주어졌을 때 관련성이 높은 텍스트를 찾거나, 텍스트가 주어졌을 때 관련 이미지 검색에 활용할 수 있습니다.
 
-참고 자료:
+|     |     |     |     |     |
+| --- | --- | --- | --- | --- |
+| 모델명 | HuggingFace Full Name | 이미지 인코더 | 입력 해상도 | 특징  |
+| ViT-B/32 | `openai/clip-vit-base-patch32` | ViT (Base) | 224 | 표준 모델 |
+| ViT-B/16 | `openai/clip-vit-base-patch16` | ViT (Base) | 224 | 더 정밀 |
+| ViT-L/14 | `openai/clip-vit-large-patch14` | ViT (Large) | 224 | 고성능 |
+| ViT-L/14@336 | `openai/clip-vit-large-patch14-336` | ViT (Large) | 336 | 고해상도 |
 
-- <https://arxiv.org/abs/2103.00020>
-- <https://github.com/openai/CLIP>
+- 참고 자료
+  - https://arxiv.org/abs/2103.00020
+  - https://github.com/openai/CLIP
 
 ## OpenCLIP
 
-이 프로젝트에서는 OpenCLIP 사용을 우선합니다.
-
-- OpenAI CLIP의 오픈소스 재구현 모델입니다.
+- OpenAI CLIP의 오픈소스 재구현 모델.
 - LAION 대규모 이미지-텍스트 데이터셋으로 재학습된 모델을 사용할 수 있습니다.
 - 이미지 검색과 텍스트-이미지 매칭에 적합합니다.
 
-LAION(Large-scale Artificial Intelligence Open Network)은 독일 기반 비영리 AI 단체로, 대규모 이미지와 텍스트 데이터셋을 공개합니다.
+|     |     |     |     |     |
+| --- | --- | --- | --- | --- |
+| 모델명 | HuggingFace Full Name | 이미지 인코더 | 입력 해상도 | 특징  |
+| ViT-B/32 (LAION) | `laion/CLIP-ViT-B-32-laion2B-s34B-b79K` | ViT (Base) | 224 | 대규모 데이터 학습 |
+| ViT-H/14 | `laion/CLIP-ViT-H-14-laion2B-s32B-b79K` | ViT (Huge) | 224 | 매우 높은 성능 |
 
-- 데이터 구조: 이미지 URL + 텍스트 설명(Caption)
-- 주요 규모:
-  - LAION-400M: 약 4억 개
-  - LAION-2B: 약 20억 개
-  - LAION-5B: 약 58억 개
+> **LAION 이란?**  
+> LAION(Large-scale Artificial Intelligence Open Network)은 독일 기반 비영리 AI 단체로, 대규모 이미지와 텍스트 데이터셋을 공개합니다.
+> 
+> - 데이터 구조: 이미지 URL + 텍스트 설명(Caption)
+> - 주요 규모:
+> - LAION-400M: 약 4억 개
+> - LAION-2B: 약 20억 개
+> - LAION-5B: 약 58억 개
 
-## 모델 후보
+## FashionCLIP
+
+- OpenAI CLIP 기반 일반 이미지-텍스트 매칭이 아닌 패션 상품 검색/분류에 특화 모델.
+- 패션 상품 이미지 + 상품명/설명 텍스트 를 학습함.
+- 일반 CLIP 대비:
+  - 의류 카테고리 구분 (셔츠, 원피스, 아우터 등)
+  - 스타일 표현 (casual, formal, street 등)
+  - 색상/핏/디테일 인식
+- 패션 상품 검색 정확도 개선
+
+|     |     |     |     |     |
+| --- | --- | --- | --- | --- |
+| 모델명 | HuggingFace Full Name | 이미지 인코더 | 입력 해상도 | 특징  |
+| FashionCLIP | `patrickjohncyh/fashion-clip` | ViT-B/32 기반 | 224 | 패션 도메인 특화 |
+
+### 모델 후보
 
 - <https://huggingface.co/openai/clip-vit-base-patch32>
 - <https://huggingface.co/openai/clip-vit-large-patch14>
